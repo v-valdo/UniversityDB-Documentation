@@ -2,9 +2,7 @@
 
 ## Initial Setup
 
-### MySQL
-
-#### Table Creation
+### Table Creation
 
 ```
 CREATE TABLE Departments ( 
@@ -41,7 +39,7 @@ CREATE TABLE StudentEnrollments (
 );
 ```
 
-#### Altering Foreign Key
+### Altering Foreign Key
 
 Foreign key connecting tables **Departments (Department Head)** with **Professors (ID)** had to be added subsequently to avoid conflicts with circular references:
 
@@ -50,7 +48,7 @@ ALTER TABLE Departments
 ADD FOREIGN KEY (HeadProfessorID) REFERENCES Professors(id);
 ```
 
-#### Database Population
+### Database Population
 
 The following queries populates our demo database with students, courses, departments and professors. It then fills the junction table (representing a *MANY-TO-MANY* relationship between Students and Courses) **StudentEnrollments** with data, making sure several students are enrolled in several courses.
 
@@ -140,4 +138,33 @@ VALUES
     (18, 1), (18, 2), (18, 3),
     (19, 1), (19, 2), (19, 3),
     (20, 1), (20, 2), (20, 3), (20, 4), (20, 5);
+```
+
+## SELECT Queries (Collecting Information)
+
+### Student Enrollment Info
+
+In order to gather information on a specific student enrollment, run the following query:
+
+```
+SELECT Courses.coursename, Students.FirstName, Students.LastName
+FROM Courses
+JOIN StudentEnrollments ON Courses.id = StudentEnrollments.CourseID
+JOIN Students ON StudentEnrollments.StudentID = Students.id
+WHERE Students.id = 6;
+```
+
+The table printed shows the *coursename*, *student first name* and *student last name* related to student with student-ID '6'.
+
+### Professor Department Association
+
+The following query counts (COUNT) the amount of professors belonging to each department and prints a table showcasing each department and the sum of professors associated with the department.
+
+```
+SELECT departments.id AS DepartmentID, Departments.DeptName, COUNT(Professors.id) AS ProfessorCount
+FROM Departments
+LEFT JOIN Professors ON Departments.id = Professors.Department_ID
+GROUP BY Departments.id, Departments.DeptName;
+
+
 ```
