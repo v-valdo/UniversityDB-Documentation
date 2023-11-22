@@ -41,13 +41,7 @@ performing various operations.
 - Discuss what constraints were triggered in these cases and why.
   Presentation:
 
-
-
-
 Each group will present their SQL implementations, demonstrate their queries in action, and discuss their data integrity challenges and (if tackled) the bonus challenge.
-
 
 Discussion:
 Conclude with a discussion on the challenges faced during implementation, insights gained about the importance of database design, and reflections on how database constraints ensure data integrity.
-
-
