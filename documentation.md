@@ -158,7 +158,7 @@ The table printed shows the *coursename*, *student first name* and *student last
 
 ### Professor Department Association
 
-The following query counts (COUNT) the amount of professors belonging to each department and prints a table showcasing each department and the sum of professors associated with the department.
+The following query counts (`COUNT`) the amount of professors belonging to each department and prints a table showcasing each department and the sum of professors associated with the department.
 
 ```
 SELECT departments.id AS DepartmentID, Departments.DeptName, COUNT(Professors.id) AS ProfessorCount
@@ -169,9 +169,9 @@ GROUP BY Departments.id, Departments.DeptName;
 
 ### Course Offers for Each Department
 
-This query uses GROUP BY and the CONCAT method to retrieve and display all courses connected to each department. **GROUP_CONCAT** makes sure the field "Courses" adds all courses together in one string, separated by one comma.
+This query uses `GROUP BY`and the CONCAT method to retrieve and display all courses connected to each department. `GROUP_CONCAT` makes sure the field "Courses" adds all courses together in one string, separated by one comma.
 
-**GROUP BY** groups all courses together that shares the same department ID.
+`**GROUP BY** `groups all courses together that shares the same department ID.
 
 ```
 SELECT Departments.deptname AS Department,
@@ -206,7 +206,7 @@ VALUES ("Stefan", "Goransson", 'ENG05');
 
 ### Assigning a New Head Professor
 
-To assign a new head of a department, the UPDATE syntax is required.
+To assign a new head of a department, the `UPDATE `command is required.
 
 ```
 UPDATE departments
@@ -224,7 +224,7 @@ To add a new student and then enroll them to a course, two separate sql queries 
 
 ```
 insert into students(firstname, lastname, dob, enrolmentyear)
-values ('Valdemar', 'Sersam', '1994-06-14', 2023))
+values ('Valdemar', 'Databasson', '1994-06-14', 2023))
 ```
 
 **Enrolling them:**
@@ -233,10 +233,10 @@ values ('Valdemar', 'Sersam', '1994-06-14', 2023))
 INSERT INTO StudentEnrollments (StudentID, CourseID)
 SELECT id, 3
 FROM Students
-WHERE FirstName = 'Valdemar' AND LastName = 'Sersam';
+WHERE FirstName = 'Valdemar' AND LastName = 'Databasson';
 ```
 
-This enrolls our newly added student to Chemistry 101, with course ID 3. SELECT id is used to allow the insertion to use the name of the students instead of the ID.
+This enrolls our newly added student to Chemistry 101, with course ID 3. `SELECT id` is used to allow the insertion to use the name of the students instead of the ID.
 
 ### Adding a New Course
 
@@ -248,3 +248,40 @@ VALUES ('Nuclear Bomb Development', 'CHEM15');
 ```
 
 ## Data Integrity Challenge
+
+### Enrolling student to non-existent course
+
+When attempting to enroll a student (via the junction table StudentEnrollments) to a course that doesn't exist triggers a foreign key constraint. Since the table was created with foreign keys referencing **studentID** and **courseID**- insertions requires existing fields in tables **students** and courses.
+
+```
+INSERT INTO Studentenrollments (StudentID, CourseID)
+values (21, 12);
+```
+
+### Assign non existing professor as head
+
+Same error occurs when attempting to update the departments table with a head professor ID that does not exist. Again - foreign key constraint triggers this error.
+
+```
+UPDATE departments
+SET HeadProfessorID = 12
+WHERE id = 'MATH20';
+```
+
+### Adding a course w/o department
+
+An identical conflict rises when we add a course with a department that doesn't exist.
+
+```
+INSERT INTO Courses (Coursename, department_ID)
+VALUES ('Programming 404', 14);
+```
+
+If we don't specify a department at all during insertion, the column count doesn't match - which generates an error.
+
+We are however able to insert a course with a "NULL" department, since the field has not been specified as "`NOT NULL`" during table creation (see "*Table Creation*"):
+
+```
+INSERT INTO Courses (Coursename, department_ID)
+VALUES ('Programming 404', NULL);
+```
